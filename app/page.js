@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { CiFilter } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
@@ -6,24 +6,26 @@ import { TbFileDownload } from "react-icons/tb";
 import { MdOutlineSkipPrevious, MdOutlineSkipNext } from "react-icons/md";
 import { useState, useEffect, useMemo } from "react";
 import report from "../public/data";
+import Link from "next/link";
 
 export default function Home() {
   const [noOfRows, setNoOfRows] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const startIndex = useMemo(() => (currentPage - 1) * noOfRows, [
-    currentPage,
-    noOfRows,
-  ]);
+  const startIndex = useMemo(
+    () => (currentPage - 1) * noOfRows,
+    [currentPage, noOfRows]
+  );
 
   const displayedReport = useMemo(
     () => report.slice(startIndex, startIndex + parseInt(noOfRows)),
     [startIndex, noOfRows]
   );
 
-  const totalPages = useMemo(() => Math.ceil(report.length / noOfRows), [
-    noOfRows,
-  ]);
+  const totalPages = useMemo(
+    () => Math.ceil(report.length / noOfRows),
+    [noOfRows]
+  );
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -91,21 +93,25 @@ export default function Home() {
           </div>
         </div>
         <div className=" w-full h-[550px] overflow-y-scroll">
-        {displayedReport.map((item, index) => (
-          <div
-            key={index}
-            className="flex w-full  justify-evenly p-2 border-t border-gray-200"
-          >
-            <div className="text-xs justify-start w-full sm:w-1/4">
-              <div>{item.date}</div>
-              <div className=" text-xs text-gray-500">{item.time}</div>
+          {displayedReport.map((item, index) => (
+            <div
+              key={index}
+              className="flex w-full  justify-evenly p-2 border-t border-gray-200"
+            >
+              <div className="text-xs justify-start w-full sm:w-1/4">
+                <div>{item.date}</div>
+                <div className=" text-xs text-gray-500">{item.time}</div>
+              </div>
+              <div className="flex text-xs justify-start w-full">
+                {item.name}
+              </div>
+              <div className="flex text-xs sm:justify-start justify-center w-full sm:w-1/4">
+                <a href={"/energies-14-01435-v2 (1).pdf"} download={"report"}>
+                  <TbFileDownload className="sm:text-2xl" />
+                </a>
+              </div>
             </div>
-            <div className="flex text-xs justify-start w-full">{item.name}</div>
-            <div className="flex text-xs sm:justify-start justify-center w-full sm:w-1/4">
-              <TbFileDownload className="sm:text-2xl" />
-            </div>
-          </div>
-        ))}
+          ))}
         </div>
         <div className="flex sm:flex-row flex-col w-full items-center justify-center gap-2 mt-2 sm:gap-10">
           <div>
@@ -128,7 +134,7 @@ export default function Home() {
               placeholder="10"
               className="focus:outline-none w-12 h-6 border-2 border-gray-500 px-1"
               value={noOfRows}
-              onChange={(e) => setNoOfRows(e.target.value)}
+              onChange={(e) => setNoOfRows(Math.abs(e.target.value % 40))}
             />
           </div>
         </div>
