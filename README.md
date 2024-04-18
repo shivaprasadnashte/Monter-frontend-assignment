@@ -5,7 +5,6 @@ This project is a simple report viewer web application built using Next.js. It a
 ## Features
 
 - Display recently generated reports
-- Filter reports
 - Download individual reports
 - Pagination for easy navigation through reports
 - Adjustable number of rows per page
@@ -28,7 +27,4 @@ This project is a simple report viewer web application built using Next.js. It a
 
 ![Alt text](/public/image.png?raw=true "Optional Title")
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
