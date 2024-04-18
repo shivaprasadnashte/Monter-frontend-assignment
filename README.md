@@ -26,7 +26,7 @@ This project is a simple report viewer web application built using Next.js. It a
 
 ## Screenshots
 
-![Screenshot 1]("/Pasted image.png")
+![Alt text](/public/image.png?raw=true "Optional Title")
 
 ## License
 
