@@ -1,45 +1,69 @@
 "use client"
+
 import { CiFilter } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
 import { TbFileDownload } from "react-icons/tb";
 import { MdOutlineSkipPrevious, MdOutlineSkipNext } from "react-icons/md";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import report from "../public/data";
 
 export default function Home() {
   const [noOfRows, setNoOfRows] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [displayedReport, setDisplayedReport] = useState([]);
 
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * noOfRows;
-    const endIndex = Math.min(startIndex + parseInt(noOfRows), report.length);
-    console.log(endIndex)
-    setDisplayedReport(report.slice(startIndex, endIndex));
-  }, [noOfRows, currentPage]);
+  const startIndex = useMemo(() => (currentPage - 1) * noOfRows, [
+    currentPage,
+    noOfRows,
+  ]);
 
+  const displayedReport = useMemo(
+    () => report.slice(startIndex, startIndex + parseInt(noOfRows)),
+    [startIndex, noOfRows]
+  );
 
-
-
-  const totalPages = Math.ceil(report.length / noOfRows);
+  const totalPages = useMemo(() => Math.ceil(report.length / noOfRows), [
+    noOfRows,
+  ]);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
   const handlePrev = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prevPage) => prevPage - 1);
     }
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 4;
+    const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <div
+          key={i}
+          className={`border-2 flex  justify-center items-center ${
+            currentPage === i ? "bg-orange-500" : ""
+          } sm:w-8 w-6 h-6 sm:h-8`}
+          onClick={() => setCurrentPage(i)}
+        >
+          <p>{i}</p>
+        </div>
+      );
+    }
+    return pageNumbers;
   };
 
   return (
     <>
-      <div className="flex flex-col items-center sm:p-10 shadow-2xl m-1 sm:my-5 sm:mx-5 min-h-screen">
+      <div className="flex flex-col items-center sm:p-10 shadow-2xl m-1 sm:my-5 sm:mx-5 ">
         <div className="flex justify-center w-full">
-          <div className="flex justify-evenly w-full">
+          <div className="flex mb-3 items-center justify-evenly w-full">
             <div className="w-3/4 flex sm:justify-center">
               <h1 className="font-bold text-sm sm:text-xl">
                 Recently Generated Report
@@ -62,45 +86,38 @@ export default function Home() {
           <div className="flex text-xs font-bold justify-start w-full">
             Report Name
           </div>
-          <div className="flex text-xs font-bold justify-start w-full sm:w-1/4">
+          <div className="flex text-xs font-bold justify-center  sm:justify-start w-full sm:w-1/4">
             Download
           </div>
         </div>
+        <div className=" w-full h-[550px] overflow-y-scroll">
         {displayedReport.map((item, index) => (
           <div
             key={index}
-            className="flex w-full justify-evenly p-2 border-t border-gray-200"
+            className="flex w-full  justify-evenly p-2 border-t border-gray-200"
           >
             <div className="text-xs justify-start w-full sm:w-1/4">
               <div>{item.date}</div>
-              <div>{item.time}</div>
+              <div className=" text-xs text-gray-500">{item.time}</div>
             </div>
-            <div className="flex text-xs justify-start w-full">
-              {item.name}
-            </div>
-            <div className="flex text-xs justify-start w-full sm:w-1/4">
-              <div className="border-[1px] border-black rounded-md h-6 w-8 flex justify-center items-center">
-                <TbFileDownload className="sm:text-2xl" />
-              </div>
+            <div className="flex text-xs justify-start w-full">{item.name}</div>
+            <div className="flex text-xs sm:justify-start justify-center w-full sm:w-1/4">
+              <TbFileDownload className="sm:text-2xl" />
             </div>
           </div>
         ))}
-        <div className="flex w-full items-center justify-center gap-10">
+        </div>
+        <div className="flex sm:flex-row flex-col w-full items-center justify-center gap-2 mt-2 sm:gap-10">
           <div>
             <div className="flex justify-center items-center gap-4">
-              <div className="flex gap-1">
-                <MdOutlineSkipPrevious
-                  className="sm:text-2xl cursor-pointer"
-                  onClick={handlePrev}
-                />
-                <p>Prev</p>
+              <div className="flex gap-1" onClick={handlePrev}>
+                <MdOutlineSkipPrevious className="sm:text-2xl text-xs cursor-pointer" />
+                <p className="text-xs sm:text-sm">Prev</p>
               </div>
-              <div className="border-2 flex justify-center items-center bg-orange-500 w-8 h-8">
-                <p>{currentPage}</p>
-              </div>
+              {renderPageNumbers()}
               <div className="flex gap-1 cursor-pointer" onClick={handleNext}>
-                <p>Next</p>
-                <MdOutlineSkipNext className="sm:text-2xl" />
+                <p className="text-xs sm:text-sm">Next</p>
+                <MdOutlineSkipNext className="sm:text-2xl text-xs" />
               </div>
             </div>
           </div>
