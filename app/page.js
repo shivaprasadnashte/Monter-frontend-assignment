@@ -126,7 +126,7 @@ export default function Home() {
               {renderPageNumbers()}
               <button
                 className="flex gap-1 cursor-pointer items-center disabled:text-gray-500 disabled:cursor-not-allowed"
-                disabled={currentPage == 40 / noOfRows}
+                disabled={currentPage == report.length / noOfRows}
                 onClick={handleNext}
               >
                 <p className="text-xs sm:text-sm">Next</p>
@@ -141,7 +141,11 @@ export default function Home() {
               placeholder="10"
               className="focus:outline-none w-12 h-6 border-2 border-gray-500 px-1"
               value={noOfRows}
-              onChange={(e) => setNoOfRows(Math.abs(e.target.value % 40))}
+              onChange={(e) =>
+                e.target.value > 0
+                  ? setNoOfRows(e.target.value)
+                  : setNoOfRows(1)
+              }
             />
           </div>
         </div>
