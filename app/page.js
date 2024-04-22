@@ -1,12 +1,11 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { CiFilter } from "react-icons/ci";
+import { MdOutlineSkipNext, MdOutlineSkipPrevious } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { TbFileDownload } from "react-icons/tb";
-import { MdOutlineSkipPrevious, MdOutlineSkipNext } from "react-icons/md";
-import { useState, useEffect, useMemo } from "react";
 import report from "../public/data";
-import Link from "next/link";
 
 export default function Home() {
   const [noOfRows, setNoOfRows] = useState(10);
@@ -49,7 +48,7 @@ export default function Home() {
       pageNumbers.push(
         <div
           key={i}
-          className={`border-2 flex  justify-center items-center ${
+          className={`border-2 flex hover:cursor-pointer  justify-center items-center ${
             currentPage === i ? "bg-orange-500" : ""
           } sm:w-8 w-6 h-6 sm:h-8`}
           onClick={() => setCurrentPage(i)}
@@ -63,8 +62,8 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex flex-col items-center sm:p-10 shadow-2xl m-1 sm:my-5 sm:mx-5 ">
-        <div className="flex justify-center w-full">
+      <div className="flex flex-col items-center sm:p-10 h-screen overflow-y-scroll  shadow-2xl  sm:mx-5 ">
+        <div className="flex justify-center w-full ">
           <div className="flex mb-3 items-center justify-evenly w-full">
             <div className="w-3/4 flex sm:justify-center">
               <h1 className="font-bold text-sm sm:text-xl">
@@ -81,7 +80,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="flex w-full justify-evenly bg-gray-100 p-2">
+        <div className="flex w-full justify-evenly  bg-gray-100 p-2">
           <div className="flex text-xs font-bold justify-start w-full sm:w-1/4">
             Date
           </div>
@@ -92,7 +91,7 @@ export default function Home() {
             Download
           </div>
         </div>
-        <div className=" w-full h-[550px] overflow-y-scroll">
+        <div className=" w-full h-full overflow-y-scroll">
           {displayedReport.map((item, index) => (
             <div
               key={index}
@@ -116,15 +115,23 @@ export default function Home() {
         <div className="flex sm:flex-row flex-col w-full items-center justify-center gap-2 mt-2 sm:gap-10">
           <div>
             <div className="flex justify-center items-center gap-4">
-              <div className="flex gap-1" onClick={handlePrev}>
-                <MdOutlineSkipPrevious className="sm:text-2xl text-xs cursor-pointer" />
+              <button
+                className="flex gap-1 cursor-pointer items-center disabled:text-gray-500 disabled:cursor-not-allowed"
+                disabled={currentPage == 1}
+                onClick={handlePrev}
+              >
+                <MdOutlineSkipPrevious className="sm:text-2xl text-xs " />
                 <p className="text-xs sm:text-sm">Prev</p>
-              </div>
+              </button>
               {renderPageNumbers()}
-              <div className="flex gap-1 cursor-pointer" onClick={handleNext}>
+              <button
+                className="flex gap-1 cursor-pointer items-center disabled:text-gray-500 disabled:cursor-not-allowed"
+                disabled={currentPage == 40 / noOfRows}
+                onClick={handleNext}
+              >
                 <p className="text-xs sm:text-sm">Next</p>
                 <MdOutlineSkipNext className="sm:text-2xl text-xs" />
-              </div>
+              </button>
             </div>
           </div>
           <div className="flex gap-2">
